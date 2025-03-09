@@ -1,7 +1,7 @@
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-screenGui.Name = "AbilitySpammerGui"
+screenGui.Name = "MSBfucker"
 screenGui.ResetOnSpawn = false
 
 -- Create main frame (the box)
@@ -23,7 +23,7 @@ titleBar.Parent = frame
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0.8, 0, 1, 0)
 title.BackgroundTransparency = 1
-title.Text = "Ability Spammer"
+title.Text = "MSB Fucker"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 20
 title.Font = Enum.Font.SourceSansBold
