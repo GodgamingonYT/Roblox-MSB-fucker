@@ -60,7 +60,7 @@ cooldownBox.Text = "" -- Empty by default
 cooldownBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 cooldownBox.TextSize = 16
 cooldownBox.Font = Enum.Font.SourceSans
-cooldownBox.PlaceholderText = "CD (Def:0.1)"
+cooldownBox.PlaceholderText = "CD (Default:0.1)"
 cooldownBox.Parent = frame
 
 -- Create single-use button
