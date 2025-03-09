@@ -6,8 +6,8 @@ screenGui.ResetOnSpawn = false
 
 -- Create main frame (the box)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 200, 0, 180)
-frame.Position = UDim2.new(0.5, -100, 0.5, -90)
+frame.Size = UDim2.new(0, 200, 0, 220)
+frame.Position = UDim2.new(0.5, -100, 0.5, -110)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
@@ -51,10 +51,22 @@ spamButton.TextSize = 18
 spamButton.Font = Enum.Font.SourceSans
 spamButton.Parent = frame
 
+-- Create cooldown text box
+local cooldownBox = Instance.new("TextBox")
+cooldownBox.Size = UDim2.new(0, 120, 0, 30)
+cooldownBox.Position = UDim2.new(0.5, -60, 0, 90)
+cooldownBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+cooldownBox.Text = "" -- Empty by default
+cooldownBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+cooldownBox.TextSize = 16
+cooldownBox.Font = Enum.Font.SourceSans
+cooldownBox.PlaceholderText = "CD (Def:0.1)"
+cooldownBox.Parent = frame
+
 -- Create single-use button
 local useButton = Instance.new("TextButton")
 useButton.Size = UDim2.new(0, 120, 0, 40)
-useButton.Position = UDim2.new(0.5, -60, 0, 90)
+useButton.Position = UDim2.new(0.5, -60, 0, 130)
 useButton.BackgroundColor3 = Color3.fromRGB(60, 80, 120)
 useButton.Text = "Use Ability"
 useButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -115,7 +127,7 @@ local function getEquippedGear()
     if character then
         for _, child in pairs(character:GetChildren()) do
             if child:IsA("Tool") then
-                return child, child.Name:gsub("%s+", "") -- Remove all spaces
+                return child, child.Name:gsub("%s+", "")
             end
         end
     end
@@ -131,7 +143,7 @@ spawn(function()
             currentGear = nil
             character = player.Character or player.CharacterAdded:Wait()
         end
-        wait(0.1) -- Check every 0.1 seconds
+        wait(0.1)
     end
 end)
 
@@ -140,13 +152,34 @@ player.CharacterAdded:Connect(function(newChar)
     character = newChar
 end)
 
--- Function to fire ability
+-- Function to fire ability with fallback
 local function fireAbility()
     local gear, gearNameNoSpaces = getEquippedGear()
+    local success = false
+    
+    -- First attempt: character[gearNameNoSpaces].AbilityEvent
     if gear and character and character:FindFirstChild(gearNameNoSpaces) then
-        character[gearNameNoSpaces].AbilityEvent:FireServer()
-    else
-        warn("No gear equipped or AbilityEvent not found for gear: " .. (gearNameNoSpaces or "None"))
+        local abilityEvent = character[gearNameNoSpaces]:FindFirstChild("AbilityEvent")
+        if abilityEvent then
+            pcall(function()
+                abilityEvent:FireServer()
+                success = true
+            end)
+        end
+    end
+    
+    -- Fallback if first method fails
+    if not success then
+        local replicatedStorage = game:GetService("ReplicatedStorage")
+        local remoteEvents = replicatedStorage:WaitForChild("RemoteEvents")
+        local fallbackEvent = remoteEvents:WaitForChild("AbilityEvent")
+        if fallbackEvent then
+            pcall(function()
+                fallbackEvent:FireServer()
+            end)
+        else
+            warn("Both ability fire methods failed!")
+        end
     end
 end
 
@@ -162,7 +195,8 @@ spamButton.MouseButton1Click:Connect(function()
         spawn(function()
             while isActive do
                 fireAbility()
-                wait(0.1)
+                local cooldown = tonumber(cooldownBox.Text) or 0.1 -- Default to 0.1 if invalid or empty
+                wait(math.max(0, cooldown)) -- Minimum 0s cooldown
             end
         end)
     else
