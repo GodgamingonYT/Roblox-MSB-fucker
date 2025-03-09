@@ -2,12 +2,12 @@
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 screenGui.Name = "AbilitySpammerGui"
-screenGui.ResetOnSpawn = false -- Prevents closing on character reset
+screenGui.ResetOnSpawn = false
 
 -- Create main frame (the box)
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 200, 0, 180)
-frame.Position = UDim2.new(0.5, -100, 0.5, -90) -- Centered
+frame.Position = UDim2.new(0.5, -100, 0.5, -90)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
@@ -21,7 +21,7 @@ titleBar.Parent = frame
 
 -- Create title text
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0.8, 0, 1, 0) -- Reduced width to fit X button
+title.Size = UDim2.new(0.8, 0, 1, 0)
 title.BackgroundTransparency = 1
 title.Text = "Ability Spammer"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -32,7 +32,7 @@ title.Parent = titleBar
 -- Create close button (X)
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -30, 0, 0) -- Adjusted to fit within frame
+closeButton.Position = UDim2.new(1, -30, 0, 0)
 closeButton.BackgroundColor3 = Color3.fromRGB(120, 60, 60)
 closeButton.Text = "X"
 closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -102,8 +102,53 @@ end)
 
 -- Close button functionality
 closeButton.MouseButton1Click:Connect(function()
-    screenGui.Enabled = false -- Hides the GUI
+    screenGui.Enabled = false
 end)
+
+-- Gear detection and ability firing
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local currentGear = nil
+
+-- Function to find equipped gear and remove spaces from name
+local function getEquippedGear()
+    if character then
+        for _, child in pairs(character:GetChildren()) do
+            if child:IsA("Tool") then
+                return child, child.Name:gsub("%s+", "") -- Remove all spaces
+            end
+        end
+    end
+    return nil, nil
+end
+
+-- Continuous gear checking loop
+spawn(function()
+    while true do
+        if character then
+            currentGear = getEquippedGear()
+        else
+            currentGear = nil
+            character = player.Character or player.CharacterAdded:Wait()
+        end
+        wait(0.1) -- Check every 0.1 seconds
+    end
+end)
+
+-- Update character reference when respawned
+player.CharacterAdded:Connect(function(newChar)
+    character = newChar
+end)
+
+-- Function to fire ability
+local function fireAbility()
+    local gear, gearNameNoSpaces = getEquippedGear()
+    if gear and character and character:FindFirstChild(gearNameNoSpaces) then
+        character[gearNameNoSpaces].AbilityEvent:FireServer()
+    else
+        warn("No gear equipped or AbilityEvent not found for gear: " .. (gearNameNoSpaces or "None"))
+    end
+end
 
 -- Spam button functionality
 local isActive = false
@@ -111,24 +156,23 @@ local isActive = false
 spamButton.MouseButton1Click:Connect(function()
     if not isActive then
         isActive = true
-        spamButton.BackgroundColor3 = Color3.fromRGB(120, 60, 60) -- Red when active
+        spamButton.BackgroundColor3 = Color3.fromRGB(120, 60, 60)
         spamButton.Text = "Stop Fucking"
         
-        -- Start the ability spam
         spawn(function()
             while isActive do
-                game:GetService("Players").LocalPlayer.Character.Replica.AbilityEvent:FireServer()
-                wait(0.1) -- Adjust this delay as needed
+                fireAbility()
+                wait(0.1)
             end
         end)
     else
         isActive = false
-        spamButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green when inactive
+        spamButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
         spamButton.Text = "Start Fucking"
     end
 end)
 
 -- Single-use button functionality
 useButton.MouseButton1Click:Connect(function()
-    game:GetService("Players").LocalPlayer.Character.Replica.AbilityEvent:FireServer()
+    fireAbility()
 end)
