@@ -12,12 +12,20 @@ frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
 
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 10) -- 10 pixel radius
+frameCorner.Parent = frame
+
 -- Create title bar (for dragging)
 local titleBar = Instance.new("Frame")
 titleBar.Size = UDim2.new(1, 0, 0, 30)
 titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 titleBar.BorderSizePixel = 0
 titleBar.Parent = frame
+
+local titleBarCorner = Instance.new("UICorner")
+titleBarCorner.CornerRadius = UDim.new(0, 10)
+titleBarCorner.Parent = titleBar
 
 -- Create title text
 local title = Instance.new("TextLabel")
@@ -40,6 +48,10 @@ closeButton.TextSize = 20
 closeButton.Font = Enum.Font.SourceSansBold
 closeButton.Parent = titleBar
 
+local closeButtonCorner = Instance.new("UICorner")
+closeButtonCorner.CornerRadius = UDim.new(0, 10)
+closeButtonCorner.Parent = closeButton
+
 -- Create spam toggle button
 local spamButton = Instance.new("TextButton")
 spamButton.Size = UDim2.new(0, 120, 0, 40)
@@ -50,6 +62,10 @@ spamButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 spamButton.TextSize = 18
 spamButton.Font = Enum.Font.SourceSans
 spamButton.Parent = frame
+
+local spamButtonCorner = Instance.new("UICorner")
+spamButtonCorner.CornerRadius = UDim.new(0, 10)
+spamButtonCorner.Parent = spamButton
 
 -- Create cooldown text box
 local cooldownBox = Instance.new("TextBox")
@@ -63,6 +79,10 @@ cooldownBox.Font = Enum.Font.SourceSans
 cooldownBox.PlaceholderText = "CD (Default:0.1)"
 cooldownBox.Parent = frame
 
+local cooldownBoxCorner = Instance.new("UICorner")
+cooldownBoxCorner.CornerRadius = UDim.new(0, 10)
+cooldownBoxCorner.Parent = cooldownBox
+
 -- Create single-use button
 local useButton = Instance.new("TextButton")
 useButton.Size = UDim2.new(0, 120, 0, 40)
@@ -73,6 +93,10 @@ useButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 useButton.TextSize = 18
 useButton.Font = Enum.Font.SourceSans
 useButton.Parent = frame
+
+local useButtonCorner = Instance.new("UICorner")
+useButtonCorner.CornerRadius = UDim.new(0, 10)
+useButtonCorner.Parent = useButton
 
 -- Dragging functionality
 local dragging
