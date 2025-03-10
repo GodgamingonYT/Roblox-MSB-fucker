@@ -112,29 +112,43 @@ warningFrameCorner.CornerRadius = UDim.new(0, 10)
 warningFrameCorner.Parent = warningFrame
 
 local warningText = Instance.new("TextLabel")
-warningText.Size = UDim2.new(1, 0, 0, 100)
+warningText.Size = UDim2.new(1, 0, 0, 80) -- Adjusted for two buttons
 warningText.Position = UDim2.new(0, 0, 0, 0)
 warningText.BackgroundTransparency = 1
-warningText.Text = "Please equip a glove first!"
+warningText.Text = "Can bro fucking equip a glove to use this?"
 warningText.TextColor3 = Color3.fromRGB(255, 255, 255)
 warningText.TextSize = 20
 warningText.Font = Enum.Font.SourceSansBold
 warningText.TextWrapped = true
 warningText.Parent = warningFrame
 
-local okButton = Instance.new("TextButton")
-okButton.Size = UDim2.new(0, 80, 0, 40)
-okButton.Position = UDim2.new(0.5, -40, 0, 105)
-okButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
-okButton.Text = "OK"
-okButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-okButton.TextSize = 18
-okButton.Font = Enum.Font.SourceSans
-okButton.Parent = warningFrame
+local hellNahButton = Instance.new("TextButton")
+hellNahButton.Size = UDim2.new(0, 80, 0, 40)
+hellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
+hellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
+hellNahButton.Text = "Hell Nah"
+hellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+hellNahButton.TextSize = 18
+hellNahButton.Font = Enum.Font.SourceSans
+hellNahButton.Parent = warningFrame
 
-local okButtonCorner = Instance.new("UICorner")
-okButtonCorner.CornerRadius = UDim.new(0, 10)
-okButtonCorner.Parent = okButton
+local hellNahButtonCorner = Instance.new("UICorner")
+hellNahButtonCorner.CornerRadius = UDim.new(0, 10)
+hellNahButtonCorner.Parent = hellNahButton
+
+local fuckOffButton = Instance.new("TextButton")
+fuckOffButton.Size = UDim2.new(0, 80, 0, 40)
+fuckOffButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
+fuckOffButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
+fuckOffButton.Text = "Fuck off"
+fuckOffButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+fuckOffButton.TextSize = 18
+fuckOffButton.Font = Enum.Font.SourceSans
+fuckOffButton.Parent = warningFrame
+
+local fuckOffButtonCorner = Instance.new("UICorner")
+fuckOffButtonCorner.CornerRadius = UDim.new(0, 10)
+fuckOffButtonCorner.Parent = fuckOffButton
 
 -- Dragging functionality for main UI
 local dragging
@@ -179,9 +193,14 @@ closeButton.MouseButton1Click:Connect(function()
     screenGui.Enabled = false
 end)
 
--- Warning UI OK button functionality
-okButton.MouseButton1Click:Connect(function()
-    warningFrame.Visible = false -- Make warning invisible instead of disabling the GUI
+-- Warning UI Fuck off button functionality
+fuckOffButton.MouseButton1Click:Connect(function()
+    warningFrame.Visible = false -- Make warning invisible
+end)
+
+-- Warning UI Hell Nah button functionality
+hellNahButton.MouseButton1Click:Connect(function()
+    game.Players.LocalPlayer:Kick("Hell nah, you outta here!") -- Kick the player
 end)
 
 -- Glove detection and ability firing
@@ -259,9 +278,15 @@ spamButton.MouseButton1Click:Connect(function()
         
         spawn(function()
             while isActive do
+                if not getEquippedGlove() or not player.Character then
+                    isActive = false
+                    spamButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
+                    spamButton.Text = "Start Fucking"
+                    break -- Exit the loop without warning
+                end
                 fireAbility()
                 local cooldown = tonumber(cooldownBox.Text) or 0.1
-                wait(math.max(0, cooldown))
+                task.wait(math.max(0, cooldown))
             end
         end)
     else
@@ -273,5 +298,10 @@ end)
 
 -- Single-use button functionality
 useButton.MouseButton1Click:Connect(function()
+    local glove = getEquippedGlove()
+    if not glove or not player.Character then
+        warningFrame.Visible = true
+        return
+    end
     fireAbility()
 end)
