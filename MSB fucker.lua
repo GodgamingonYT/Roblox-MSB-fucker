@@ -200,7 +200,7 @@ end)
 
 -- Warning UI Hell Nah button functionality
 hellNahButton.MouseButton1Click:Connect(function()
-    game.Players.LocalPlayer:Kick("Hell nah, you outta here!") -- Kick the player
+    game.Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit loser.") -- Kick the player
 end)
 
 -- Glove detection and ability firing
