@@ -13,7 +13,7 @@ frame.BorderSizePixel = 0
 frame.Parent = screenGui
 
 local frameCorner = Instance.new("UICorner")
-frameCorner.CornerRadius = UDim.new(0, 10) -- 10 pixel radius
+frameCorner.CornerRadius = UDim.new(0, 10)
 frameCorner.Parent = frame
 
 -- Create title bar (for dragging)
@@ -72,7 +72,7 @@ local cooldownBox = Instance.new("TextBox")
 cooldownBox.Size = UDim2.new(0, 120, 0, 30)
 cooldownBox.Position = UDim2.new(0.5, -60, 0, 90)
 cooldownBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-cooldownBox.Text = "" -- Empty by default
+cooldownBox.Text = ""
 cooldownBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 cooldownBox.TextSize = 16
 cooldownBox.Font = Enum.Font.SourceSans
@@ -88,7 +88,7 @@ local useButton = Instance.new("TextButton")
 useButton.Size = UDim2.new(0, 120, 0, 40)
 useButton.Position = UDim2.new(0.5, -60, 0, 130)
 useButton.BackgroundColor3 = Color3.fromRGB(60, 80, 120)
-useButton.Text = "Use Ability"
+useButton.Text = "Fuck Them Once"
 useButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 useButton.TextSize = 18
 useButton.Font = Enum.Font.SourceSans
@@ -98,7 +98,49 @@ local useButtonCorner = Instance.new("UICorner")
 useButtonCorner.CornerRadius = UDim.new(0, 10)
 useButtonCorner.Parent = useButton
 
--- Dragging functionality
+-- Create warning UI
+local warningGui = Instance.new("ScreenGui")
+warningGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+warningGui.Name = "WarningGui"
+warningGui.Enabled = false
+
+local warningFrame = Instance.new("Frame")
+warningFrame.Size = UDim2.new(0, 250, 0, 150)
+warningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
+warningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+warningFrame.BorderSizePixel = 0
+warningFrame.Parent = warningGui
+
+local warningFrameCorner = Instance.new("UICorner")
+warningFrameCorner.CornerRadius = UDim.new(0, 10)
+warningFrameCorner.Parent = warningFrame
+
+local warningText = Instance.new("TextLabel")
+warningText.Size = UDim2.new(1, 0, 0, 100)
+warningText.Position = UDim2.new(0, 0, 0, 0)
+warningText.BackgroundTransparency = 1
+warningText.Text = "Please equip a glove first!"
+warningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+warningText.TextSize = 20
+warningText.Font = Enum.Font.SourceSansBold
+warningText.TextWrapped = true
+warningText.Parent = warningFrame
+
+local okButton = Instance.new("TextButton")
+okButton.Size = UDim2.new(0, 80, 0, 40)
+okButton.Position = UDim2.new(0.5, -40, 0, 105)
+okButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
+okButton.Text = "OK"
+okButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+okButton.TextSize = 18
+okButton.Font = Enum.Font.SourceSans
+okButton.Parent = warningFrame
+
+local okButtonCorner = Instance.new("UICorner")
+okButtonCorner.CornerRadius = UDim.new(0, 10)
+okButtonCorner.Parent = okButton
+
+-- Dragging functionality for main UI
 local dragging
 local dragInput
 local dragStart
@@ -141,15 +183,20 @@ closeButton.MouseButton1Click:Connect(function()
     screenGui.Enabled = false
 end)
 
--- Gear detection and ability firing
+-- Warning UI OK button functionality
+okButton.MouseButton1Click:Connect(function()
+    warningGui.Enabled = false
+end)
+
+-- Glove detection and ability firing
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
-local currentGear = nil
 
--- Function to find equipped gear and remove spaces from name
-local function getEquippedGear()
-    if character then
-        for _, child in pairs(character:GetChildren()) do
+-- Function to find equipped glove and remove spaces from name
+local function getEquippedGlove()
+    local char = player.Character
+    if char then
+        for _, child in pairs(char:GetChildren()) do
             if child:IsA("Tool") then
                 return child, child.Name:gsub("%s+", "")
             end
@@ -158,15 +205,10 @@ local function getEquippedGear()
     return nil, nil
 end
 
--- Continuous gear checking loop
+-- Continuous glove checking loop
 spawn(function()
     while true do
-        if character then
-            currentGear = getEquippedGear()
-        else
-            currentGear = nil
-            character = player.Character or player.CharacterAdded:Wait()
-        end
+        character = player.Character
         wait(0.1)
     end
 end)
@@ -178,12 +220,17 @@ end)
 
 -- Function to fire ability with fallback
 local function fireAbility()
-    local gear, gearNameNoSpaces = getEquippedGear()
+    local glove, gloveNameNoSpaces = getEquippedGlove()
+    if not glove or not character then
+        warningGui.Enabled = true
+        return
+    end
+    
     local success = false
     
-    -- First attempt: character[gearNameNoSpaces].AbilityEvent
-    if gear and character and character:FindFirstChild(gearNameNoSpaces) then
-        local abilityEvent = character[gearNameNoSpaces]:FindFirstChild("AbilityEvent")
+    -- First attempt: character[gloveNameNoSpaces].AbilityEvent
+    if character and character:FindFirstChild(gloveNameNoSpaces) then
+        local abilityEvent = character[gloveNameNoSpaces]:FindFirstChild("AbilityEvent")
         if abilityEvent then
             pcall(function()
                 abilityEvent:FireServer()
@@ -212,6 +259,12 @@ local isActive = false
 
 spamButton.MouseButton1Click:Connect(function()
     if not isActive then
+        local glove = getEquippedGlove()
+        if not glove or not character then
+            warningGui.Enabled = true
+            return
+        end
+        
         isActive = true
         spamButton.BackgroundColor3 = Color3.fromRGB(120, 60, 60)
         spamButton.Text = "Stop Fucking"
@@ -219,8 +272,8 @@ spamButton.MouseButton1Click:Connect(function()
         spawn(function()
             while isActive do
                 fireAbility()
-                local cooldown = tonumber(cooldownBox.Text) or 0.1 -- Default to 0.1 if invalid or empty
-                wait(math.max(0, cooldown)) -- Minimum 0s cooldown
+                local cooldown = tonumber(cooldownBox.Text) or 0.1
+                wait(math.max(0, cooldown))
             end
         end)
     else
