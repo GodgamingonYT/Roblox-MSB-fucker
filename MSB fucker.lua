@@ -1,8 +1,11 @@
+print("Script starting...") -- Debug: Confirm script begins
+
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui", 5) -- Wait for PlayerGui with timeout
 screenGui.Name = "MSBfucker"
 screenGui.ResetOnSpawn = false
+print("ScreenGui created and parented to PlayerGui") -- Debug: Confirm ScreenGui setup
 
 -- Create main frame (the box)
 local frame = Instance.new("Frame")
@@ -10,11 +13,13 @@ frame.Size = UDim2.new(0, 200, 0, 220)
 frame.Position = UDim2.new(0.5, -100, 0.5, -110)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.BorderSizePixel = 0
+frame.Visible = false -- Hide main menu initially
 frame.Parent = screenGui
 
 local frameCorner = Instance.new("UICorner")
 frameCorner.CornerRadius = UDim.new(0, 10)
 frameCorner.Parent = frame
+print("Main frame created and initially hidden") -- Debug: Confirm main frame
 
 -- Create title bar (for dragging)
 local titleBar = Instance.new("Frame")
@@ -98,57 +103,164 @@ local useButtonCorner = Instance.new("UICorner")
 useButtonCorner.CornerRadius = UDim.new(0, 10)
 useButtonCorner.Parent = useButton
 
--- Create warning frame (inside main ScreenGui)
-local warningFrame = Instance.new("Frame")
-warningFrame.Size = UDim2.new(0, 250, 0, 150)
-warningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
-warningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-warningFrame.BorderSizePixel = 0
-warningFrame.Parent = screenGui
-warningFrame.Visible = false -- Initially invisible
+-- Create initial warning frame (shown when script runs)
+local initialWarningFrame = Instance.new("Frame")
+initialWarningFrame.Size = UDim2.new(0, 250, 0, 150)
+initialWarningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
+initialWarningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+initialWarningFrame.BorderSizePixel = 0
+initialWarningFrame.Parent = screenGui
+initialWarningFrame.Visible = true -- Visible when script starts
+print("Initial warning frame created") -- Debug: Confirm initial warning
 
-local warningFrameCorner = Instance.new("UICorner")
-warningFrameCorner.CornerRadius = UDim.new(0, 10)
-warningFrameCorner.Parent = warningFrame
+local initialWarningFrameCorner = Instance.new("UICorner")
+initialWarningFrameCorner.CornerRadius = UDim.new(0, 10)
+initialWarningFrameCorner.Parent = initialWarningFrame
 
-local warningText = Instance.new("TextLabel")
-warningText.Size = UDim2.new(1, 0, 0, 80) -- Adjusted for two buttons
-warningText.Position = UDim2.new(0, 0, 0, 0)
-warningText.BackgroundTransparency = 1
-warningText.Text = "Can bro fucking equip a glove to use this?"
-warningText.TextColor3 = Color3.fromRGB(255, 255, 255)
-warningText.TextSize = 20
-warningText.Font = Enum.Font.SourceSansBold
-warningText.TextWrapped = true
-warningText.Parent = warningFrame
+local initialWarningText = Instance.new("TextLabel")
+initialWarningText.Size = UDim2.new(1, 0, 0, 80)
+initialWarningText.Position = UDim2.new(0, 0, 0, 0)
+initialWarningText.BackgroundTransparency = 1
+initialWarningText.Text = "Before using the script, be aware that using this may result in a kick/ban. Make sure the glove you want to spam has an ability."
+initialWarningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+initialWarningText.TextSize = 20
+initialWarningText.Font = Enum.Font.SourceSansBold
+initialWarningText.TextWrapped = true
+initialWarningText.Parent = initialWarningFrame
+print("Initial warning text added") -- Debug: Confirm text
 
-local hellNahButton = Instance.new("TextButton")
-hellNahButton.Size = UDim2.new(0, 80, 0, 40)
-hellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
-hellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
-hellNahButton.Text = "Hell Nah"
-hellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-hellNahButton.TextSize = 18
-hellNahButton.Font = Enum.Font.SourceSans
-hellNahButton.Parent = warningFrame
+local initialHellNahButton = Instance.new("TextButton")
+initialHellNahButton.Size = UDim2.new(0, 80, 0, 40)
+initialHellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
+initialHellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
+initialHellNahButton.Text = "Hell Nah"
+initialHellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+initialHellNahButton.TextSize = 18
+initialHellNahButton.Font = Enum.Font.SourceSans
+initialHellNahButton.Parent = initialWarningFrame
 
-local hellNahButtonCorner = Instance.new("UICorner")
-hellNahButtonCorner.CornerRadius = UDim.new(0, 10)
-hellNahButtonCorner.Parent = hellNahButton
+local initialHellNahButtonCorner = Instance.new("UICorner")
+initialHellNahButtonCorner.CornerRadius = UDim.new(0, 10)
+initialHellNahButtonCorner.Parent = initialHellNahButton
 
-local fuckOffButton = Instance.new("TextButton")
-fuckOffButton.Size = UDim2.new(0, 80, 0, 40)
-fuckOffButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
-fuckOffButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
-fuckOffButton.Text = "Fuck off"
-fuckOffButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-fuckOffButton.TextSize = 18
-fuckOffButton.Font = Enum.Font.SourceSans
-fuckOffButton.Parent = warningFrame
+local initialOkButton = Instance.new("TextButton")
+initialOkButton.Size = UDim2.new(0, 80, 0, 40)
+initialOkButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
+initialOkButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
+initialOkButton.Text = "OK!"
+initialOkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+initialOkButton.TextSize = 18
+initialOkButton.Font = Enum.Font.SourceSans
+initialOkButton.Parent = initialWarningFrame
 
-local fuckOffButtonCorner = Instance.new("UICorner")
-fuckOffButtonCorner.CornerRadius = UDim.new(0, 10)
-fuckOffButtonCorner.Parent = fuckOffButton
+local initialOkButtonCorner = Instance.new("UICorner")
+initialOkButtonCorner.CornerRadius = UDim.new(0, 10)
+initialOkButtonCorner.Parent = initialOkButton
+print("Initial warning buttons added") -- Debug: Confirm buttons
+
+-- Create no-glove warning frame
+local noGloveWarningFrame = Instance.new("Frame")
+noGloveWarningFrame.Size = UDim2.new(0, 250, 0, 150)
+noGloveWarningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
+noGloveWarningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+noGloveWarningFrame.BorderSizePixel = 0
+noGloveWarningFrame.Parent = screenGui
+noGloveWarningFrame.Visible = false
+
+local noGloveWarningFrameCorner = Instance.new("UICorner")
+noGloveWarningFrameCorner.CornerRadius = UDim.new(0, 10)
+noGloveWarningFrameCorner.Parent = noGloveWarningFrame
+
+local noGloveWarningText = Instance.new("TextLabel")
+noGloveWarningText.Size = UDim2.new(1, 0, 0, 80)
+noGloveWarningText.Position = UDim2.new(0, 0, 0, 0)
+noGloveWarningText.BackgroundTransparency = 1
+noGloveWarningText.Text = "Can bro fucking equip a glove to use this?"
+noGloveWarningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+noGloveWarningText.TextSize = 20
+noGloveWarningText.Font = Enum.Font.SourceSansBold
+noGloveWarningText.TextWrapped = true
+noGloveWarningText.Parent = noGloveWarningFrame
+
+local noGloveHellNahButton = Instance.new("TextButton")
+noGloveHellNahButton.Size = UDim2.new(0, 80, 0, 40)
+noGloveHellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
+noGloveHellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
+noGloveHellNahButton.Text = "Hell Nah"
+noGloveHellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noGloveHellNahButton.TextSize = 18
+noGloveHellNahButton.Font = Enum.Font.SourceSans
+noGloveHellNahButton.Parent = noGloveWarningFrame
+
+local noGloveHellNahButtonCorner = Instance.new("UICorner")
+noGloveHellNahButtonCorner.CornerRadius = UDim.new(0, 10)
+noGloveHellNahButtonCorner.Parent = noGloveHellNahButton
+
+local noGloveFuckOffButton = Instance.new("TextButton")
+noGloveFuckOffButton.Size = UDim2.new(0, 80, 0, 40)
+noGloveFuckOffButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
+noGloveFuckOffButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
+noGloveFuckOffButton.Text = "Fuck off"
+noGloveFuckOffButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noGloveFuckOffButton.TextSize = 18
+noGloveFuckOffButton.Font = Enum.Font.SourceSans
+noGloveFuckOffButton.Parent = noGloveWarningFrame
+
+local noGloveFuckOffButtonCorner = Instance.new("UICorner")
+noGloveFuckOffButtonCorner.CornerRadius = UDim.new(0, 10)
+noGloveFuckOffButtonCorner.Parent = noGloveFuckOffButton
+
+-- Create no-ability warning frame
+local noAbilityWarningFrame = Instance.new("Frame")
+noAbilityWarningFrame.Size = UDim2.new(0, 250, 0, 150)
+noAbilityWarningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
+noAbilityWarningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+noAbilityWarningFrame.BorderSizePixel = 0
+noAbilityWarningFrame.Parent = screenGui
+noAbilityWarningFrame.Visible = false
+
+local noAbilityWarningFrameCorner = Instance.new("UICorner")
+noAbilityWarningFrameCorner.CornerRadius = UDim.new(0, 10)
+noAbilityWarningFrameCorner.Parent = noAbilityWarningFrame
+
+local noAbilityWarningText = Instance.new("TextLabel")
+noAbilityWarningText.Size = UDim2.new(1, 0, 0, 80)
+noAbilityWarningText.Position = UDim2.new(0, 0, 0, 0)
+noAbilityWarningText.BackgroundTransparency = 1
+noAbilityWarningText.Text = "This glove do not have a fucking ability"
+noAbilityWarningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+noAbilityWarningText.TextSize = 20
+noAbilityWarningText.Font = Enum.Font.SourceSansBold
+noAbilityWarningText.TextWrapped = true
+noAbilityWarningText.Parent = noAbilityWarningFrame
+
+local noAbilityHellNahButton = Instance.new("TextButton")
+noAbilityHellNahButton.Size = UDim2.new(0, 80, 0, 40)
+noAbilityHellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
+noAbilityHellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
+noAbilityHellNahButton.Text = "Hell Nah"
+noAbilityHellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noAbilityHellNahButton.TextSize = 18
+noAbilityHellNahButton.Font = Enum.Font.SourceSans
+noAbilityHellNahButton.Parent = noAbilityWarningFrame
+
+local noAbilityHellNahButtonCorner = Instance.new("UICorner")
+noAbilityHellNahButtonCorner.CornerRadius = UDim.new(0, 10)
+noAbilityHellNahButtonCorner.Parent = noAbilityHellNahButton
+
+local noAbilityFuckOffButton = Instance.new("TextButton")
+noAbilityFuckOffButton.Size = UDim2.new(0, 80, 0, 40)
+noAbilityFuckOffButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
+noAbilityFuckOffButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
+noAbilityFuckOffButton.Text = "Fuck off"
+noAbilityFuckOffButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noAbilityFuckOffButton.TextSize = 18
+noAbilityFuckOffButton.Font = Enum.Font.SourceSans
+noAbilityFuckOffButton.Parent = noAbilityWarningFrame
+
+local noAbilityFuckOffButtonCorner = Instance.new("UICorner")
+noAbilityFuckOffButtonCorner.CornerRadius = UDim.new(0, 10)
+noAbilityFuckOffButtonCorner.Parent = noAbilityFuckOffButton
 
 -- Dragging functionality for main UI
 local dragging
@@ -193,14 +305,36 @@ closeButton.MouseButton1Click:Connect(function()
     screenGui.Enabled = false
 end)
 
--- Warning UI Fuck off button functionality
-fuckOffButton.MouseButton1Click:Connect(function()
-    warningFrame.Visible = false -- Make warning invisible
+-- Initial warning UI OK! button functionality
+initialOkButton.MouseButton1Click:Connect(function()
+    initialWarningFrame.Visible = false   -- Hide the warning frame
+    frame.Visible = true                    -- Show the main menu
+    print("Initial warning OK! clicked, main menu is now visible") -- Debug: Confirm OK! works
 end)
 
--- Warning UI Hell Nah button functionality
-hellNahButton.MouseButton1Click:Connect(function()
-    game.Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit loser.") -- Kick the player
+-- Initial warning UI Hell Nah button functionality
+initialHellNahButton.MouseButton1Click:Connect(function()
+    game.Players.LocalPlayer:Kick("Hell nah? Go Fucking eat a shit right now")
+end)
+
+-- No-glove warning UI Fuck off button functionality
+noGloveFuckOffButton.MouseButton1Click:Connect(function()
+    noGloveWarningFrame.Visible = false
+end)
+
+-- No-glove warning UI Hell Nah button functionality
+noGloveHellNahButton.MouseButton1Click:Connect(function()
+    game.Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
+end)
+
+-- No-ability warning UI Fuck off button functionality
+noAbilityFuckOffButton.MouseButton1Click:Connect(function()
+    noAbilityWarningFrame.Visible = false
+end)
+
+-- No-ability warning UI Hell Nah button functionality
+noAbilityHellNahButton.MouseButton1Click:Connect(function()
+    game.Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
 end)
 
 -- Glove detection and ability firing
@@ -223,13 +357,13 @@ end
 local function fireAbility()
     local glove, gloveNameNoSpaces = getEquippedGlove()
     if not glove then
-        warningFrame.Visible = true
+        noGloveWarningFrame.Visible = true
         return
     end
     
     local char = player.Character
     if not char then
-        warningFrame.Visible = true
+        noGloveWarningFrame.Visible = true
         return
     end
     
@@ -243,7 +377,13 @@ local function fireAbility()
                 abilityEvent:FireServer()
                 success = true
             end)
+        else
+            noAbilityWarningFrame.Visible = true
+            return
         end
+    else
+        noAbilityWarningFrame.Visible = true
+        return
     end
     
     -- Fallback if first method fails
@@ -268,7 +408,7 @@ spamButton.MouseButton1Click:Connect(function()
     if not isActive then
         local glove = getEquippedGlove()
         if not glove or not player.Character then
-            warningFrame.Visible = true
+            noGloveWarningFrame.Visible = true
             return
         end
         
@@ -300,8 +440,10 @@ end)
 useButton.MouseButton1Click:Connect(function()
     local glove = getEquippedGlove()
     if not glove or not player.Character then
-        warningFrame.Visible = true
+        noGloveWarningFrame.Visible = true
         return
     end
     fireAbility()
 end)
+
+print("Script fully loaded") -- Debug: Confirm script completion
