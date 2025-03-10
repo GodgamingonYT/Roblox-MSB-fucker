@@ -98,18 +98,14 @@ local useButtonCorner = Instance.new("UICorner")
 useButtonCorner.CornerRadius = UDim.new(0, 10)
 useButtonCorner.Parent = useButton
 
--- Create warning UI
-local warningGui = Instance.new("ScreenGui")
-warningGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-warningGui.Name = "WarningGui"
-warningGui.Enabled = false
-
+-- Create warning frame (inside main ScreenGui)
 local warningFrame = Instance.new("Frame")
 warningFrame.Size = UDim2.new(0, 250, 0, 150)
 warningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
 warningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 warningFrame.BorderSizePixel = 0
-warningFrame.Parent = warningGui
+warningFrame.Parent = screenGui
+warningFrame.Visible = false -- Initially invisible
 
 local warningFrameCorner = Instance.new("UICorner")
 warningFrameCorner.CornerRadius = UDim.new(0, 10)
@@ -185,12 +181,11 @@ end)
 
 -- Warning UI OK button functionality
 okButton.MouseButton1Click:Connect(function()
-    warningGui.Enabled = false
+    warningFrame.Visible = false -- Make warning invisible instead of disabling the GUI
 end)
 
 -- Glove detection and ability firing
 local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
 
 -- Function to find equipped glove and remove spaces from name
 local function getEquippedGlove()
@@ -205,32 +200,25 @@ local function getEquippedGlove()
     return nil, nil
 end
 
--- Continuous glove checking loop
-spawn(function()
-    while true do
-        character = player.Character
-        wait(0.1)
-    end
-end)
-
--- Update character reference when respawned
-player.CharacterAdded:Connect(function(newChar)
-    character = newChar
-end)
-
 -- Function to fire ability with fallback
 local function fireAbility()
     local glove, gloveNameNoSpaces = getEquippedGlove()
-    if not glove or not character then
-        warningGui.Enabled = true
+    if not glove then
+        warningFrame.Visible = true
+        return
+    end
+    
+    local char = player.Character
+    if not char then
+        warningFrame.Visible = true
         return
     end
     
     local success = false
     
     -- First attempt: character[gloveNameNoSpaces].AbilityEvent
-    if character and character:FindFirstChild(gloveNameNoSpaces) then
-        local abilityEvent = character[gloveNameNoSpaces]:FindFirstChild("AbilityEvent")
+    if char:FindFirstChild(gloveNameNoSpaces) then
+        local abilityEvent = char[gloveNameNoSpaces]:FindFirstChild("AbilityEvent")
         if abilityEvent then
             pcall(function()
                 abilityEvent:FireServer()
@@ -260,8 +248,8 @@ local isActive = false
 spamButton.MouseButton1Click:Connect(function()
     if not isActive then
         local glove = getEquippedGlove()
-        if not glove or not character then
-            warningGui.Enabled = true
+        if not glove or not player.Character then
+            warningFrame.Visible = true
             return
         end
         
