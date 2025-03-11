@@ -1,71 +1,76 @@
 print("Script starting...") -- Debug: Confirm script begins
 
+-- Services
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui", 5) -- Wait for PlayerGui with timeout
+screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui", 5)
 screenGui.Name = "MSBfucker"
 screenGui.ResetOnSpawn = false
-print("ScreenGui created and parented to PlayerGui") -- Debug: Confirm ScreenGui setup
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling -- Ensure layering
+print("ScreenGui created and parented to PlayerGui")
 
--- Create main frame (the box)
+-- Create main frame (slightly larger, refined design)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 200, 0, 220)
-frame.Position = UDim2.new(0.5, -100, 0.5, -110)
-frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.Size = UDim2.new(0, 240, 0, 280) -- Slightly bigger for breathing room
+frame.Position = UDim2.new(0.5, -120, 0.5, -140)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 40) -- Softer dark gray-blue
 frame.BorderSizePixel = 0
-frame.Visible = false -- Hide main menu initially
+frame.Visible = false -- Hidden initially
 frame.Parent = screenGui
 
 local frameCorner = Instance.new("UICorner")
-frameCorner.CornerRadius = UDim.new(0, 10)
+frameCorner.CornerRadius = UDim.new(0, 12)
 frameCorner.Parent = frame
-print("Main frame created and initially hidden") -- Debug: Confirm main frame
+print("Main frame created and initially hidden")
 
--- Create title bar (for dragging)
+-- Create title bar (draggable, refined)
 local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 30)
-titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+titleBar.Size = UDim2.new(1, 0, 0, 40) -- Taller for elegance
+titleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 30) -- Deep gray-blue
 titleBar.BorderSizePixel = 0
 titleBar.Parent = frame
 
 local titleBarCorner = Instance.new("UICorner")
-titleBarCorner.CornerRadius = UDim.new(0, 10)
+titleBarCorner.CornerRadius = UDim.new(0, 12)
 titleBarCorner.Parent = titleBar
 
--- Create title text
+-- Create title text (cleaner font)
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0.8, 0, 1, 0)
 title.BackgroundTransparency = 1
 title.Text = "MSB Fucker"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 20
-title.Font = Enum.Font.SourceSansBold
+title.TextColor3 = Color3.fromRGB(220, 220, 255) -- Soft white-blue
+title.TextSize = 24
+title.Font = Enum.Font.GothamBold -- Modern, bold font
 title.Parent = titleBar
 
--- Create close button (X)
+-- Create close button (X, animated)
 local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -30, 0, 0)
-closeButton.BackgroundColor3 = Color3.fromRGB(120, 60, 60)
+closeButton.Size = UDim2.new(0, 40, 0, 40)
+closeButton.Position = UDim2.new(1, -40, 0, 0)
+closeButton.BackgroundColor3 = Color3.fromRGB(140, 50, 50) -- Muted red
 closeButton.Text = "X"
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.TextSize = 20
-closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextColor3 = Color3.fromRGB(255, 220, 220) -- Soft red-white
+closeButton.TextSize = 24
+closeButton.Font = Enum.Font.GothamBold
 closeButton.Parent = titleBar
 
 local closeButtonCorner = Instance.new("UICorner")
-closeButtonCorner.CornerRadius = UDim.new(0, 10)
+closeButtonCorner.CornerRadius = UDim.new(0, 12)
 closeButtonCorner.Parent = closeButton
 
 -- Create spam toggle button
 local spamButton = Instance.new("TextButton")
-spamButton.Size = UDim2.new(0, 120, 0, 40)
-spamButton.Position = UDim2.new(0.5, -60, 0, 40)
-spamButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
+spamButton.Size = UDim2.new(0, 160, 0, 50)
+spamButton.Position = UDim2.new(0.5, -80, 0, 50)
+spamButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70) -- Deep green
 spamButton.Text = "Start Fucking"
-spamButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-spamButton.TextSize = 18
-spamButton.Font = Enum.Font.SourceSans
+spamButton.TextColor3 = Color3.fromRGB(220, 255, 220) -- Light green-white
+spamButton.TextSize = 20
+spamButton.Font = Enum.Font.Gotham
 spamButton.Parent = frame
 
 local spamButtonCorner = Instance.new("UICorner")
@@ -74,14 +79,14 @@ spamButtonCorner.Parent = spamButton
 
 -- Create cooldown text box
 local cooldownBox = Instance.new("TextBox")
-cooldownBox.Size = UDim2.new(0, 120, 0, 30)
-cooldownBox.Position = UDim2.new(0.5, -60, 0, 90)
-cooldownBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+cooldownBox.Size = UDim2.new(0, 160, 0, 40)
+cooldownBox.Position = UDim2.new(0.5, -80, 0, 110)
+cooldownBox.BackgroundColor3 = Color3.fromRGB(45, 45, 50) -- Darker input
 cooldownBox.Text = ""
-cooldownBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-cooldownBox.TextSize = 16
-cooldownBox.Font = Enum.Font.SourceSans
-cooldownBox.PlaceholderText = "CD (Default:0.1)"
+cooldownBox.TextColor3 = Color3.fromRGB(200, 200, 220) -- Soft gray-blue
+cooldownBox.TextSize = 18
+cooldownBox.Font = Enum.Font.Gotham
+cooldownBox.PlaceholderText = "CD (Default: 0.1)"
 cooldownBox.Parent = frame
 
 local cooldownBoxCorner = Instance.new("UICorner")
@@ -90,53 +95,54 @@ cooldownBoxCorner.Parent = cooldownBox
 
 -- Create single-use button
 local useButton = Instance.new("TextButton")
-useButton.Size = UDim2.new(0, 120, 0, 40)
-useButton.Position = UDim2.new(0.5, -60, 0, 130)
-useButton.BackgroundColor3 = Color3.fromRGB(60, 80, 120)
+useButton.Size = UDim2.new(0, 160, 0, 50)
+useButton.Position = UDim2.new(0.5, -80, 0, 160)
+useButton.BackgroundColor3 = Color3.fromRGB(70, 90, 130) -- Muted blue
 useButton.Text = "Fuck Them Once"
-useButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-useButton.TextSize = 18
-useButton.Font = Enum.Font.SourceSans
+useButton.TextColor3 = Color3.fromRGB(220, 220, 255) -- Light blue-white
+useButton.TextSize = 20
+useButton.Font = Enum.Font.Gotham
 useButton.Parent = frame
 
 local useButtonCorner = Instance.new("UICorner")
 useButtonCorner.CornerRadius = UDim.new(0, 10)
 useButtonCorner.Parent = useButton
 
--- Create initial warning frame (shown when script runs)
+-- Create initial warning frame
 local initialWarningFrame = Instance.new("Frame")
-initialWarningFrame.Size = UDim2.new(0, 250, 0, 150)
-initialWarningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
-initialWarningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+initialWarningFrame.Size = UDim2.new(0, 280, 0, 180)
+initialWarningFrame.Position = UDim2.new(0.5, -140, 0.5, -90)
+initialWarningFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
 initialWarningFrame.BorderSizePixel = 0
 initialWarningFrame.Parent = screenGui
-initialWarningFrame.Visible = true -- Visible when script starts
-print("Initial warning frame created") -- Debug: Confirm initial warning
+initialWarningFrame.Visible = true
+initialWarningFrame.ZIndex = 10 -- Ensure it’s on top
+print("Initial warning frame created")
 
 local initialWarningFrameCorner = Instance.new("UICorner")
-initialWarningFrameCorner.CornerRadius = UDim.new(0, 10)
+initialWarningFrameCorner.CornerRadius = UDim.new(0, 12)
 initialWarningFrameCorner.Parent = initialWarningFrame
 
 local initialWarningText = Instance.new("TextLabel")
-initialWarningText.Size = UDim2.new(1, 0, 0, 80)
-initialWarningText.Position = UDim2.new(0, 0, 0, 0)
+initialWarningText.Size = UDim2.new(1, -20, 0, 100)
+initialWarningText.Position = UDim2.new(0, 10, 0, 10)
 initialWarningText.BackgroundTransparency = 1
-initialWarningText.Text = "Before using the script, be aware that using this may result in a kick/ban. Make sure the glove you want to spam has an ability."
-initialWarningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+initialWarningText.Text = "Before using, note: this may lead to a kick/ban. Ensure your glove has an ability."
+initialWarningText.TextColor3 = Color3.fromRGB(220, 220, 255)
 initialWarningText.TextSize = 20
-initialWarningText.Font = Enum.Font.SourceSansBold
+initialWarningText.Font = Enum.Font.GothamBold
 initialWarningText.TextWrapped = true
 initialWarningText.Parent = initialWarningFrame
-print("Initial warning text added") -- Debug: Confirm text
+print("Initial warning text added")
 
 local initialHellNahButton = Instance.new("TextButton")
-initialHellNahButton.Size = UDim2.new(0, 80, 0, 40)
-initialHellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
-initialHellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
+initialHellNahButton.Size = UDim2.new(0, 100, 0, 50)
+initialHellNahButton.Position = UDim2.new(0.25, -50, 0, 120)
+initialHellNahButton.BackgroundColor3 = Color3.fromRGB(140, 50, 50)
 initialHellNahButton.Text = "Hell Nah"
-initialHellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-initialHellNahButton.TextSize = 18
-initialHellNahButton.Font = Enum.Font.SourceSans
+initialHellNahButton.TextColor3 = Color3.fromRGB(255, 220, 220)
+initialHellNahButton.TextSize = 20
+initialHellNahButton.Font = Enum.Font.Gotham
 initialHellNahButton.Parent = initialWarningFrame
 
 local initialHellNahButtonCorner = Instance.new("UICorner")
@@ -144,52 +150,53 @@ initialHellNahButtonCorner.CornerRadius = UDim.new(0, 10)
 initialHellNahButtonCorner.Parent = initialHellNahButton
 
 local initialOkButton = Instance.new("TextButton")
-initialOkButton.Size = UDim2.new(0, 80, 0, 40)
-initialOkButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
-initialOkButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
+initialOkButton.Size = UDim2.new(0, 100, 0, 50)
+initialOkButton.Position = UDim2.new(0.75, -50, 0, 120)
+initialOkButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
 initialOkButton.Text = "OK!"
-initialOkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-initialOkButton.TextSize = 18
-initialOkButton.Font = Enum.Font.SourceSans
+initialOkButton.TextColor3 = Color3.fromRGB(220, 255, 220)
+initialOkButton.TextSize = 20
+initialOkButton.Font = Enum.Font.Gotham
 initialOkButton.Parent = initialWarningFrame
 
 local initialOkButtonCorner = Instance.new("UICorner")
 initialOkButtonCorner.CornerRadius = UDim.new(0, 10)
 initialOkButtonCorner.Parent = initialOkButton
-print("Initial warning buttons added") -- Debug: Confirm buttons
+print("Initial warning buttons added")
 
 -- Create no-glove warning frame
 local noGloveWarningFrame = Instance.new("Frame")
-noGloveWarningFrame.Size = UDim2.new(0, 250, 0, 150)
-noGloveWarningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
-noGloveWarningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+noGloveWarningFrame.Size = UDim2.new(0, 280, 0, 180)
+noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.5, -90)
+noGloveWarningFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
 noGloveWarningFrame.BorderSizePixel = 0
 noGloveWarningFrame.Parent = screenGui
 noGloveWarningFrame.Visible = false
+noGloveWarningFrame.ZIndex = 10
 
 local noGloveWarningFrameCorner = Instance.new("UICorner")
-noGloveWarningFrameCorner.CornerRadius = UDim.new(0, 10)
+noGloveWarningFrameCorner.CornerRadius = UDim.new(0, 12)
 noGloveWarningFrameCorner.Parent = noGloveWarningFrame
 
 local noGloveWarningText = Instance.new("TextLabel")
-noGloveWarningText.Size = UDim2.new(1, 0, 0, 80)
-noGloveWarningText.Position = UDim2.new(0, 0, 0, 0)
+noGloveWarningText.Size = UDim2.new(1, -20, 0, 100)
+noGloveWarningText.Position = UDim2.new(0, 10, 0, 10)
 noGloveWarningText.BackgroundTransparency = 1
-noGloveWarningText.Text = "Can bro fucking equip a glove to use this?"
-noGloveWarningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+noGloveWarningText.Text = "Equip a damn glove first!"
+noGloveWarningText.TextColor3 = Color3.fromRGB(220, 220, 255)
 noGloveWarningText.TextSize = 20
-noGloveWarningText.Font = Enum.Font.SourceSansBold
+noGloveWarningText.Font = Enum.Font.GothamBold
 noGloveWarningText.TextWrapped = true
 noGloveWarningText.Parent = noGloveWarningFrame
 
 local noGloveHellNahButton = Instance.new("TextButton")
-noGloveHellNahButton.Size = UDim2.new(0, 80, 0, 40)
-noGloveHellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
-noGloveHellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
+noGloveHellNahButton.Size = UDim2.new(0, 100, 0, 50)
+noGloveHellNahButton.Position = UDim2.new(0.25, -50, 0, 120)
+noGloveHellNahButton.BackgroundColor3 = Color3.fromRGB(140, 50, 50)
 noGloveHellNahButton.Text = "Hell Nah"
-noGloveHellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-noGloveHellNahButton.TextSize = 18
-noGloveHellNahButton.Font = Enum.Font.SourceSans
+noGloveHellNahButton.TextColor3 = Color3.fromRGB(255, 220, 220)
+noGloveHellNahButton.TextSize = 20
+noGloveHellNahButton.Font = Enum.Font.Gotham
 noGloveHellNahButton.Parent = noGloveWarningFrame
 
 local noGloveHellNahButtonCorner = Instance.new("UICorner")
@@ -197,13 +204,13 @@ noGloveHellNahButtonCorner.CornerRadius = UDim.new(0, 10)
 noGloveHellNahButtonCorner.Parent = noGloveHellNahButton
 
 local noGloveFuckOffButton = Instance.new("TextButton")
-noGloveFuckOffButton.Size = UDim2.new(0, 80, 0, 40)
-noGloveFuckOffButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
-noGloveFuckOffButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
-noGloveFuckOffButton.Text = "Fuck off"
-noGloveFuckOffButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-noGloveFuckOffButton.TextSize = 18
-noGloveFuckOffButton.Font = Enum.Font.SourceSans
+noGloveFuckOffButton.Size = UDim2.new(0, 100, 0, 50)
+noGloveFuckOffButton.Position = UDim2.new(0.75, -50, 0, 120)
+noGloveFuckOffButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
+noGloveFuckOffButton.Text = "Fuck Off"
+noGloveFuckOffButton.TextColor3 = Color3.fromRGB(220, 255, 220)
+noGloveFuckOffButton.TextSize = 20
+noGloveFuckOffButton.Font = Enum.Font.Gotham
 noGloveFuckOffButton.Parent = noGloveWarningFrame
 
 local noGloveFuckOffButtonCorner = Instance.new("UICorner")
@@ -212,36 +219,37 @@ noGloveFuckOffButtonCorner.Parent = noGloveFuckOffButton
 
 -- Create no-ability warning frame
 local noAbilityWarningFrame = Instance.new("Frame")
-noAbilityWarningFrame.Size = UDim2.new(0, 250, 0, 150)
-noAbilityWarningFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
-noAbilityWarningFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+noAbilityWarningFrame.Size = UDim2.new(0, 280, 0, 180)
+noAbilityWarningFrame.Position = UDim2.new(0.5, -140, 0.5, -90)
+noAbilityWarningFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
 noAbilityWarningFrame.BorderSizePixel = 0
 noAbilityWarningFrame.Parent = screenGui
 noAbilityWarningFrame.Visible = false
+noAbilityWarningFrame.ZIndex = 10
 
 local noAbilityWarningFrameCorner = Instance.new("UICorner")
-noAbilityWarningFrameCorner.CornerRadius = UDim.new(0, 10)
+noAbilityWarningFrameCorner.CornerRadius = UDim.new(0, 12)
 noAbilityWarningFrameCorner.Parent = noAbilityWarningFrame
 
 local noAbilityWarningText = Instance.new("TextLabel")
-noAbilityWarningText.Size = UDim2.new(1, 0, 0, 80)
-noAbilityWarningText.Position = UDim2.new(0, 0, 0, 0)
+noAbilityWarningText.Size = UDim2.new(1, -20, 0, 100)
+noAbilityWarningText.Position = UDim2.new(0, 10, 0, 10)
 noAbilityWarningText.BackgroundTransparency = 1
-noAbilityWarningText.Text = "This glove do not have a fucking ability"
-noAbilityWarningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+noAbilityWarningText.Text = "This glove has no ability!"
+noAbilityWarningText.TextColor3 = Color3.fromRGB(220, 220, 255)
 noAbilityWarningText.TextSize = 20
-noAbilityWarningText.Font = Enum.Font.SourceSansBold
+noAbilityWarningText.Font = Enum.Font.GothamBold
 noAbilityWarningText.TextWrapped = true
 noAbilityWarningText.Parent = noAbilityWarningFrame
 
 local noAbilityHellNahButton = Instance.new("TextButton")
-noAbilityHellNahButton.Size = UDim2.new(0, 80, 0, 40)
-noAbilityHellNahButton.Position = UDim2.new(0.25, -40, 0, 100) -- Left side
-noAbilityHellNahButton.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red
+noAbilityHellNahButton.Size = UDim2.new(0, 100, 0, 50)
+noAbilityHellNahButton.Position = UDim2.new(0.25, -50, 0, 120)
+noAbilityHellNahButton.BackgroundColor3 = Color3.fromRGB(140, 50, 50)
 noAbilityHellNahButton.Text = "Hell Nah"
-noAbilityHellNahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-noAbilityHellNahButton.TextSize = 18
-noAbilityHellNahButton.Font = Enum.Font.SourceSans
+noAbilityHellNahButton.TextColor3 = Color3.fromRGB(255, 220, 220)
+noAbilityHellNahButton.TextSize = 20
+noAbilityHellNahButton.Font = Enum.Font.Gotham
 noAbilityHellNahButton.Parent = noAbilityWarningFrame
 
 local noAbilityHellNahButtonCorner = Instance.new("UICorner")
@@ -249,31 +257,29 @@ noAbilityHellNahButtonCorner.CornerRadius = UDim.new(0, 10)
 noAbilityHellNahButtonCorner.Parent = noAbilityHellNahButton
 
 local noAbilityFuckOffButton = Instance.new("TextButton")
-noAbilityFuckOffButton.Size = UDim2.new(0, 80, 0, 40)
-noAbilityFuckOffButton.Position = UDim2.new(0.75, -40, 0, 100) -- Right side
-noAbilityFuckOffButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60) -- Green
-noAbilityFuckOffButton.Text = "Fuck off"
-noAbilityFuckOffButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-noAbilityFuckOffButton.TextSize = 18
-noAbilityFuckOffButton.Font = Enum.Font.SourceSans
+noAbilityFuckOffButton.Size = UDim2.new(0, 100, 0, 50)
+noAbilityFuckOffButton.Position = UDim2.new(0.75, -50, 0, 120)
+noAbilityFuckOffButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
+noAbilityFuckOffButton.Text = "Fuck Off"
+noAbilityFuckOffButton.TextColor3 = Color3.fromRGB(220, 255, 220)
+noAbilityFuckOffButton.TextSize = 20
+noAbilityFuckOffButton.Font = Enum.Font.Gotham
 noAbilityFuckOffButton.Parent = noAbilityWarningFrame
 
 local noAbilityFuckOffButtonCorner = Instance.new("UICorner")
 noAbilityFuckOffButtonCorner.CornerRadius = UDim.new(0, 10)
 noAbilityFuckOffButtonCorner.Parent = noAbilityFuckOffButton
 
--- Dragging functionality for main UI
-local dragging
-local dragInput
-local dragStart
-local startPos
+-- Animation setup
+local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
+-- Dragging functionality
+local dragging, dragInput, dragStart, startPos
 titleBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
         startPos = frame.Position
-        
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
@@ -291,56 +297,69 @@ end)
 game:GetService("UserInputService").InputChanged:Connect(function(input)
     if input == dragInput and dragging then
         local delta = input.Position - dragStart
-        frame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
 
--- Close button functionality
+-- Close button functionality with animation
 closeButton.MouseButton1Click:Connect(function()
-    screenGui.Enabled = false
+    local tween = TweenService:Create(frame, tweenInfo, {Position = UDim2.new(0.5, -120, 0.6, 0), Transparency = 1})
+    tween:Play()
+    tween.Completed:Connect(function()
+        screenGui.Enabled = false
+    end)
 end)
 
--- Initial warning UI OK! button functionality
+-- Initial warning UI OK! button functionality with animation
 initialOkButton.MouseButton1Click:Connect(function()
-    initialWarningFrame.Visible = false   -- Hide the warning frame
-    frame.Visible = true                    -- Show the main menu
-    print("Initial warning OK! clicked, main menu is now visible") -- Debug: Confirm OK! works
+    local tweenOut = TweenService:Create(initialWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.4, 0), Transparency = 1})
+    tweenOut:Play()
+    tweenOut.Completed:Connect(function()
+        initialWarningFrame.Visible = false
+        frame.Visible = true
+        frame.Transparency = 1
+        local tweenIn = TweenService:Create(frame, tweenInfo, {Position = UDim2.new(0.5, -120, 0.5, -140), Transparency = 0})
+        tweenIn:Play()
+        print("Initial warning OK! clicked, main menu animated in")
+    end)
 end)
 
 -- Initial warning UI Hell Nah button functionality
 initialHellNahButton.MouseButton1Click:Connect(function()
-    game.Players.LocalPlayer:Kick("Hell nah? Go Fucking eat a shit right now")
+    Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
 end)
 
--- No-glove warning UI Fuck off button functionality
+-- No-glove warning UI Fuck Off button functionality with animation
 noGloveFuckOffButton.MouseButton1Click:Connect(function()
-    noGloveWarningFrame.Visible = false
+    local tween = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.4, 0), Transparency = 1})
+    tween:Play()
+    tween.Completed:Connect(function()
+        noGloveWarningFrame.Visible = false
+    end)
 end)
 
 -- No-glove warning UI Hell Nah button functionality
 noGloveHellNahButton.MouseButton1Click:Connect(function()
-    game.Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
+    Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
 end)
 
--- No-ability warning UI Fuck off button functionality
+-- No-ability warning UI Fuck Off button functionality with animation
 noAbilityFuckOffButton.MouseButton1Click:Connect(function()
-    noAbilityWarningFrame.Visible = false
+    local tween = TweenService:Create(noAbilityWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.4, 0), Transparency = 1})
+    tween:Play()
+    tween.Completed:Connect(function()
+        noAbilityWarningFrame.Visible = false
+    end)
 end)
 
 -- No-ability warning UI Hell Nah button functionality
 noAbilityHellNahButton.MouseButton1Click:Connect(function()
-    game.Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
+    Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
 end)
 
 -- Glove detection and ability firing
-local player = game.Players.LocalPlayer
+local player = Players.LocalPlayer
 
--- Function to find equipped glove and remove spaces from name
 local function getEquippedGlove()
     local char = player.Character
     if char then
@@ -353,23 +372,29 @@ local function getEquippedGlove()
     return nil, nil
 end
 
--- Function to fire ability with fallback
 local function fireAbility()
     local glove, gloveNameNoSpaces = getEquippedGlove()
     if not glove then
+        noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.6, 0)
+        noGloveWarningFrame.Transparency = 1
         noGloveWarningFrame.Visible = true
+        local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90), Transparency = 0})
+        tweenIn:Play()
         return
     end
     
     local char = player.Character
     if not char then
+        noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.6, 0)
+        noGloveWarningFrame.Transparency = 1
         noGloveWarningFrame.Visible = true
+        local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90), Transparency = 0})
+        tweenIn:Play()
         return
     end
     
     local success = false
     
-    -- First attempt: character[gloveNameNoSpaces].AbilityEvent
     if char:FindFirstChild(gloveNameNoSpaces) then
         local abilityEvent = char[gloveNameNoSpaces]:FindFirstChild("AbilityEvent")
         if abilityEvent then
@@ -378,15 +403,22 @@ local function fireAbility()
                 success = true
             end)
         else
+            noAbilityWarningFrame.Position = UDim2.new(0.5, -140, 0.6, 0)
+            noAbilityWarningFrame.Transparency = 1
             noAbilityWarningFrame.Visible = true
+            local tweenIn = TweenService:Create(noAbilityWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90), Transparency = 0})
+            tweenIn:Play()
             return
         end
     else
+        noAbilityWarningFrame.Position = UDim2.new(0.5, -140, 0.6, 0)
+        noAbilityWarningFrame.Transparency = 1
         noAbilityWarningFrame.Visible = true
+        local tweenIn = TweenService:Create(noAbilityWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90), Transparency = 0})
+        tweenIn:Play()
         return
     end
     
-    -- Fallback if first method fails
     if not success then
         local replicatedStorage = game:GetService("ReplicatedStorage")
         local remoteEvents = replicatedStorage:WaitForChild("RemoteEvents")
@@ -408,21 +440,25 @@ spamButton.MouseButton1Click:Connect(function()
     if not isActive then
         local glove = getEquippedGlove()
         if not glove or not player.Character then
+            noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.6, 0)
+            noGloveWarningFrame.Transparency = 1
             noGloveWarningFrame.Visible = true
+            local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90), Transparency = 0})
+            tweenIn:Play()
             return
         end
         
         isActive = true
-        spamButton.BackgroundColor3 = Color3.fromRGB(120, 60, 60)
+        spamButton.BackgroundColor3 = Color3.fromRGB(140, 50, 50)
         spamButton.Text = "Stop Fucking"
         
         spawn(function()
             while isActive do
                 if not getEquippedGlove() or not player.Character then
                     isActive = false
-                    spamButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
+                    spamButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
                     spamButton.Text = "Start Fucking"
-                    break -- Exit the loop without warning
+                    break
                 end
                 fireAbility()
                 local cooldown = tonumber(cooldownBox.Text) or 0.1
@@ -431,7 +467,7 @@ spamButton.MouseButton1Click:Connect(function()
         end)
     else
         isActive = false
-        spamButton.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
+        spamButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
         spamButton.Text = "Start Fucking"
     end
 end)
@@ -440,10 +476,14 @@ end)
 useButton.MouseButton1Click:Connect(function()
     local glove = getEquippedGlove()
     if not glove or not player.Character then
+        noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.6, 0)
+        noGloveWarningFrame.Transparency = 1
         noGloveWarningFrame.Visible = true
+        local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90), Transparency = 0})
+        tweenIn:Play()
         return
     end
     fireAbility()
 end)
 
-print("Script fully loaded") -- Debug: Confirm script completion
+print("Script fully loaded")
