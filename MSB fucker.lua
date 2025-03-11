@@ -351,6 +351,19 @@ noGloveFuckOffButton.MouseButton1Click:Connect(function()
     
     tween.Completed:Connect(function()
         noGloveWarningFrame.Visible = false
+        -- Reset position and transparency for next trigger
+        noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.5, 0)
+        noGloveWarningFrame.BackgroundTransparency = 0
+        for _, child in pairs(noGloveWarningFrame:GetDescendants()) do
+            if child:IsA("GuiObject") then
+                if child:IsA("TextLabel") or child:IsA("TextButton") or child:IsA("TextBox") then
+                    child.TextTransparency = 0
+                    child.BackgroundTransparency = 0
+                elseif child:IsA("Frame") then
+                    child.BackgroundTransparency = 0
+                end
+            end
+        end
     end)
 end)
 
