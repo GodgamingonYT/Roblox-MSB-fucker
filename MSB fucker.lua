@@ -21,7 +21,6 @@ frame.BorderSizePixel = 0
 frame.BackgroundTransparency = 0 -- Visible by default
 frame.Visible = false -- Hidden initially
 frame.ZIndex = 5 -- Default ZIndex
-frame.Active = true -- Clickable by default
 frame.Parent = screenGui
 
 local frameCorner = Instance.new("UICorner")
@@ -137,7 +136,6 @@ initialWarningFrame.BackgroundTransparency = 0 -- Visible by default
 initialWarningFrame.Parent = screenGui
 initialWarningFrame.Visible = true
 initialWarningFrame.ZIndex = 10 -- Above main frame
-initialWarningFrame.Active = true
 print("Initial warning frame created")
 
 local initialWarningFrameCorner = Instance.new("UICorner")
@@ -203,7 +201,6 @@ noGloveWarningFrame.BackgroundTransparency = 0 -- Visible by default
 noGloveWarningFrame.Parent = screenGui
 noGloveWarningFrame.Visible = false
 noGloveWarningFrame.ZIndex = 10 -- Above main frame when active
-noGloveWarningFrame.Active = true
 
 local noGloveWarningFrameCorner = Instance.new("UICorner")
 noGloveWarningFrameCorner.CornerRadius = UDim.new(0, 12)
@@ -381,14 +378,6 @@ noGloveFuckOffButton.MouseButton1Click:Connect(function()
         noGloveFuckOffButton.BackgroundTransparency = 0
         noGloveFuckOffButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
         noGloveFuckOffButton.TextColor3 = Color3.fromRGB(220, 255, 220)
-        -- Restore main frame ZIndex and interactivity
-        frame.ZIndex = 5
-        frame.Active = true
-        for _, child in pairs(frame:GetDescendants()) do
-            if child:IsA("GuiObject") then
-                child.ZIndex = child.Parent == titleBar and 6 or 5
-            end
-        end
     end)
 end)
 
@@ -417,13 +406,6 @@ local function fireAbility()
     if not glove then
         noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.5, 0) -- Start below
         noGloveWarningFrame.Visible = true
-        frame.ZIndex = 1 -- Lower main frame below warning
-        frame.Active = false -- Disable main UI
-        for _, child in pairs(frame:GetDescendants()) do
-            if child:IsA("GuiObject") then
-                child.ZIndex = child.ZIndex - 4 -- Ensure all children are below warning
-            end
-        end
         local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90)}) -- Slide up
         tweenIn:Play()
         return
@@ -433,13 +415,6 @@ local function fireAbility()
     if not char then
         noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.5, 0)
         noGloveWarningFrame.Visible = true
-        frame.ZIndex = 1 -- Lower main frame below warning
-        frame.Active = false -- Disable main UI
-        for _, child in pairs(frame:GetDescendants()) do
-            if child:IsA("GuiObject") then
-                child.ZIndex = child.ZIndex - 4 -- Ensure all children are below warning
-            end
-        end
         local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90)})
         tweenIn:Play()
         return
@@ -480,13 +455,6 @@ spamButton.MouseButton1Click:Connect(function()
         if not glove or not player.Character then
             noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.5, 0)
             noGloveWarningFrame.Visible = true
-            frame.ZIndex = 1 -- Lower main frame below warning
-            frame.Active = false -- Disable main UI
-            for _, child in pairs(frame:GetDescendants()) do
-                if child:IsA("GuiObject") then
-                    child.ZIndex = child.ZIndex - 4 -- Ensure all children are below warning
-                end
-            end
             local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90)})
             tweenIn:Play()
             return
@@ -504,13 +472,6 @@ spamButton.MouseButton1Click:Connect(function()
                     spamButton.Text = "Start Fucking"
                     noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.5, 0)
                     noGloveWarningFrame.Visible = true
-                    frame.ZIndex = 1 -- Lower main frame below warning
-                    frame.Active = false -- Disable main UI
-                    for _, child in pairs(frame:GetDescendants()) do
-                        if child:IsA("GuiObject") then
-                            child.ZIndex = child.ZIndex - 4 -- Ensure all children are below warning
-                        end
-                    end
                     local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90)})
                     tweenIn:Play()
                     break
@@ -533,13 +494,6 @@ useButton.MouseButton1Click:Connect(function()
     if not glove or not player.Character then
         noGloveWarningFrame.Position = UDim2.new(0.5, -140, 0.5, 0)
         noGloveWarningFrame.Visible = true
-        frame.ZIndex = 1 -- Lower main frame below warning
-        frame.Active = false -- Disable main UI
-        for _, child in pairs(frame:GetDescendants()) do
-            if child:IsA("GuiObject") then
-                child.ZIndex = child.ZIndex - 4 -- Ensure all children are below warning
-            end
-        end
         local tweenIn = TweenService:Create(noGloveWarningFrame, tweenInfo, {Position = UDim2.new(0.5, -140, 0.5, -90)})
         tweenIn:Play()
         return
