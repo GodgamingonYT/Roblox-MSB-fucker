@@ -2,6 +2,7 @@ print("Script starting...")
 
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
@@ -15,7 +16,7 @@ print("ScreenGui created and parented")
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 240, 0, 280)
 frame.Position = UDim2.new(0.5, -120, 0.5, -140)
-frame.BackgroundColor3 = Color3.fromRGB(35, 35, 40) -- Dark grey
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
 frame.BorderSizePixel = 0
 frame.BackgroundTransparency = 0
 frame.Visible = false
@@ -69,7 +70,7 @@ closeButtonCorner.Parent = closeButton
 local minimizeButton = Instance.new("TextButton")
 minimizeButton.Size = UDim2.new(0, 40, 0, 40)
 minimizeButton.Position = UDim2.new(1, -80, 0, 0)
-minimizeButton.BackgroundColor3 = Color3.fromRGB(35, 35, 40) -- Matches frame
+minimizeButton.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
 minimizeButton.Text = "−"
 minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 minimizeButton.TextSize = 24
@@ -138,13 +139,12 @@ minimizeButton.MouseButton1Click:Connect(function()
     print("Minimize button clicked, isMinimized: " .. tostring(isMinimized))
     if isMinimized then
         print("Maximizing UI")
-        minimizeButton.Text = "−" -- Back to minimize symbol
+        minimizeButton.Text = "−"
         local tweenExpand = TweenService:Create(frame, tweenInfo, {
             Size = UDim2.new(0, 240, 0, 280)
         })
         tweenExpand:Play()
         tweenExpand.Completed:Connect(function()
-            -- Show buttons only after animation completes
             for _, child in pairs(frame:GetChildren()) do
                 if child ~= titleBar and child:IsA("GuiObject") then
                     child.Visible = true
@@ -153,13 +153,11 @@ minimizeButton.MouseButton1Click:Connect(function()
             frame.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
             minimizeButton.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
             print("Maximized, frame color: " .. tostring(frame.BackgroundColor3))
-            print("Minimize button color: " .. tostring(minimizeButton.BackgroundColor3))
         end)
         isMinimized = false
     else
         print("Minimizing UI")
-        minimizeButton.Text = "+" -- Show maximize symbol
-        -- Hide buttons immediately
+        minimizeButton.Text = "+"
         for _, child in pairs(frame:GetChildren()) do
             if child ~= titleBar and child:IsA("GuiObject") then
                 child.Visible = false
@@ -173,7 +171,6 @@ minimizeButton.MouseButton1Click:Connect(function()
             frame.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
             minimizeButton.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
             print("Minimized, frame color: " .. tostring(frame.BackgroundColor3))
-            print("Minimize button color: " .. tostring(minimizeButton.BackgroundColor3))
         end)
         isMinimized = true
     end
@@ -312,7 +309,6 @@ initialOkButton.MouseButton1Click:Connect(function()
         frame.Position = UDim2.new(frame.Position.X.Scale, frame.Position.X.Offset, 0.5, 0)
         local tweenIn = TweenService:Create(frame, tweenInfo, {Position = UDim2.new(frame.Position.X.Scale, frame.Position.X.Offset, 0.5, -140)})
         tweenIn:Play()
-        -- Ensure buttons are visible on initial show
         spamButton.Visible = true
         cooldownBox.Visible = true
         useButton.Visible = true
@@ -322,6 +318,79 @@ end)
 
 initialHellNahButton.MouseButton1Click:Connect(function()
     Players.LocalPlayer:Kick("Hell nah? Go fucking eat a shit right now")
+end)
+
+-- Main Feature: Ability Spamming
+local isSpamming = false
+
+local function useAbility()
+    local character = Players.LocalPlayer.Character
+    if not character or not character:FindFirstChild("Humanoid") then
+        warn("No character or humanoid found!")
+        return
+    end
+
+    -- Check for glove (example: assumes glove is a tool)
+    local glove = character:FindFirstChildOfClass("Tool")
+    if not glove then
+        warn("No glove equipped!")
+        return
+    end
+
+    -- Trigger ability (example: assumes glove has a RemoteEvent named "Ability")
+    local abilityEvent = glove:FindFirstChild("Ability")
+    if abilityEvent and abilityEvent:IsA("RemoteEvent") then
+        abilityEvent:FireServer()
+        print("Ability triggered!")
+    else
+        -- Fallback: Simulate click (for games without explicit ability events)
+        local humanoid = character.Humanoid
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoid and rootPart then
+            humanoid:UnequipTools()
+            wait()
+            humanoid:EquipTool(glove)
+            print("Simulated glove use!")
+        end
+    end
+end
+
+spamButton.MouseButton1Click:Connect(function()
+    if isSpamming then
+        isSpamming = false
+        spamButton.Text = "Start Fucking"
+        spamButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
+        print("Spamming stopped")
+    else
+        local cooldown = tonumber(cooldownBox.Text) or 0.1 -- Default 0.1s
+        if cooldown < 0 then cooldown = 0.1 end -- Minimum cooldown
+        isSpamming = true
+        spamButton.Text = "Stop Fucking"
+        spamButton.BackgroundColor3 = Color3.fromRGB(130, 70, 70) -- Red when active
+        print("Spamming started with cooldown: " .. cooldown)
+
+        spawn(function()
+            while isSpamming do
+                useAbility()
+                wait(cooldown)
+            end
+        end)
+    end
+end)
+
+useButton.MouseButton1Click:Connect(function()
+    print("Using ability once")
+    useAbility()
+end)
+
+-- Glove Check on Character Spawn
+Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    if isSpamming then
+        isSpamming = false
+        spamButton.Text = "Start Fucking"
+        spamButton.BackgroundColor3 = Color3.fromRGB(70, 130, 70)
+        print("Spamming stopped due to character respawn")
+    end
 end)
 
 print("Script fully loaded")
